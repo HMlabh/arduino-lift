@@ -103,9 +103,9 @@ namespace pin
 //unsigned short stepPin8 = A14;
 //unsigned short dirnPin8 = A15;
 
-int8_t step[8] = { 0 };
-int16_t rampcount = { 0 };
-int16_t rampstate = { 0 };
+int8_t step[8] = { 0 };			// 1 = normal actice;-1=ramp;0=STOP
+int16_t rampcount[8] = { 0 };	//counting back to 1
+int16_t rampstate[8] = { 0 };	//current rampstate
 
 
 
@@ -137,6 +137,9 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
+	//Timer
+	Timer1.initialize(500);         // initialize timer1, 500us Period
+	Timer1.attachInterrupt(tick);  // attaches tick() as a timer overflow interrupt
 
 	enableallmotors();
 }
@@ -234,7 +237,48 @@ void setmicrosteps()
 }
 
 //-----------INTERRUPTS------------
+void tick()
+{
+	for (int i = 0; i < 8; i++)
+	{
+		switch (step[i])
+		{
+		case 1: //normal active
+			digitalWrite(pin::step[i], HIGH);
+			break;
+		case -1: //ramp
+			if (rampcount[i] <= 1)
+			{
+				digitalWrite(pin::step[i], HIGH);
+				
+				if (rampstate[i] >= motor::rampmax)//ramp finished
+				{
+					step[i] = 1;
+				}
+				else //next ramp state
+				{
+					rampstate[i]++;
+					rampcount[i] = motor::rampdelay[rampstate[i]];
+				}
+			}
+			else
+			{
+				rampcount[i]--;
+			}
+			break;
 
+		default:
+			break;
+		}
+	}
+
+	delayMicroseconds(2);
+
+	for (int i = 0; i < 8; i++)
+	{
+		digitalWrite(pin::step[i], LOW);
+	}
+}
 
 
 void loop()
