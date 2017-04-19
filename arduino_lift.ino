@@ -19,7 +19,7 @@ namespace motor
 	int8_t microstep = 8;
 	int16_t delay = 500;
 	int16_t rampdelay[] = { 0 };
-	int16_t rampmax = 800;
+	int16_t rampmax = 300;
 }
 
 
@@ -137,10 +137,13 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
+	rampcalc();
+
 	//Timer
 	Timer1.initialize(500);         // initialize timer1, 500us Period
 	Timer1.attachInterrupt(tick);  // attaches tick() as a timer overflow interrupt
 
+	setmicrosteps();
 	enableallmotors();
 }
 
