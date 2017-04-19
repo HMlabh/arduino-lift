@@ -8,6 +8,10 @@
 *  Überarbeitet und weiterentwickelt von Markus Gutekunst
 */
 //Motor-Driver: https://www.pololu.com/product/2132
+// Timer1 Libary: http://playground.arduino.cc/Code/Timer1
+
+#include <TimerOne.h>
+
 
 //-------Variables-------
 namespace motor 
@@ -99,7 +103,9 @@ namespace pin
 //unsigned short stepPin8 = A14;
 //unsigned short dirnPin8 = A15;
 
-
+int8_t step[8] = { 0 };
+int16_t rampcount = { 0 };
+int16_t rampstate = { 0 };
 
 
 
@@ -136,6 +142,14 @@ void setup()
 }
 
 //Motor
+
+void rampcalc()
+{
+	for (int i = 1; i < motor::rampmax; i++)
+	{
+		motor::rampdelay[i] = int(sqrt(float(motor::rampmax) / i));
+	}
+}
 
 //enable all motors
 void enableallmotors()
@@ -218,6 +232,10 @@ void setmicrosteps()
 		break;
 	}
 }
+
+//-----------INTERRUPTS------------
+
+
 
 void loop()
 {
