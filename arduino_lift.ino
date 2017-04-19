@@ -10,7 +10,13 @@
 //Motor-Driver: https://www.pololu.com/product/2132
 
 //-------Variables-------
-int8_t microstep = 8;
+namespace motor 
+{
+	int8_t microstep = 8;
+	int16_t delay = 500;
+	int16_t rampdelay[] = { 0 };
+	int16_t rampmax = 800;
+}
 
 
 //-------Pins-------
@@ -25,6 +31,7 @@ namespace pin
 	uint8_t step[8]			= { 14,50,22,12,51,23,A6,A14 };
 	uint8_t direction[8]		= { 15,52,24,13,53,25,A7,A15 };
 }
+
 
 //////Motortreiber Pin Belegung//////
 //unsigned short enabPin1 = 2;			//Pinbbelegung Motortreiber 1
@@ -124,11 +131,97 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
+
+	enableallmotors();
+}
+
+//Motor
+
+//enable all motors
+void enableallmotors()
+{
+	for (int i = 0; i < 8; i++)
+	{
+		digitalWrite(pin::enable[i], LOW);		// Driver enabled
+	}
+}
+
+//disable all motors
+void disableallmotors()
+{
+	for (int i = 0; i < 8; i++)
+	{
+		digitalWrite(pin::enable[i], HIGH);		// Driver disabled
+	}
+}
+
+//set all microsteps
+void setmicrosteps()
+{
+	switch (motor::microstep)
+	{
+	case 1:		//full step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], LOW);
+			digitalWrite(pin::microstep1[i], LOW);
+			digitalWrite(pin::microstep2[i], LOW);
+		}
+		break;
+	case 2:		//half step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], HIGH);
+			digitalWrite(pin::microstep1[i], LOW);
+			digitalWrite(pin::microstep2[i], LOW);
+		}
+		break;
+	case 4:		//quater step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], LOW);
+			digitalWrite(pin::microstep1[i], HIGH);
+			digitalWrite(pin::microstep2[i], LOW);
+		}
+		break;
+	case 8:		// 1/8-step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], HIGH);
+			digitalWrite(pin::microstep1[i], HIGH);
+			digitalWrite(pin::microstep2[i], LOW);
+		}
+		break;
+	case 16:		// 1/16-step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], LOW);
+			digitalWrite(pin::microstep1[i], LOW);
+			digitalWrite(pin::microstep2[i], HIGH);
+		}
+		break;
+	case 32:		// 1/32-step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], HIGH);
+			digitalWrite(pin::microstep1[i], HIGH);
+			digitalWrite(pin::microstep2[i], HIGH);
+		}
+		break;
+	default:		//full step
+		for (int i = 0; i < 8; i++)
+		{
+			digitalWrite(pin::microstep0[i], LOW);
+			digitalWrite(pin::microstep1[i], LOW);
+			digitalWrite(pin::microstep2[i], LOW);
+		}
+		break;
+	}
 }
 
 void loop()
 {
 
-  /* add main program code here */
+  
 
 }
