@@ -12,7 +12,7 @@
 
 #include <TimerOne.h>
 
-#define timertime 500
+#define timertime 5000
 
 //-------Variables-------
 namespace motor 
@@ -272,16 +272,16 @@ void tick()
 
 void loop()
 {
-	setdir(4, 0);
-	step[4] = 1;
-	delay(500);
-	step[4] = 0;
+	setdir(1, 0);
+	step[1] = 1;
+	delay(2000);
+	step[1] = 0;
 	delay(500);
 
-	setdir(4, 1);
-	step[4] = 1;
-	delay(500);
-	step[4] = 0;
+	setdir(1, 1);
+	step[1] = 1;
+	delay(2000);
+	step[1] = 0;
 	delay(500);
 
 }
