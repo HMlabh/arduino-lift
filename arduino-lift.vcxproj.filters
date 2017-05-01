@@ -15,12 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="arduino_lift.ino" />
+    <None Include="arduino-lift.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.arduino_lift.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="__vm\.arduino-lift.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
