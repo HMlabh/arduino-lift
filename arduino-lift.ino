@@ -12,11 +12,12 @@
 
 #include <TimerOne.h>
 
+#define timertime 500
 
 //-------Variables-------
 namespace motor 
 {
-	int8_t microstep = 8;
+	int8_t microstep = 1;
 	int16_t delay = 500;
 	int16_t rampdelay[] = { 0 };
 	int16_t rampmax = 300;
@@ -103,9 +104,8 @@ namespace pin
 //unsigned short stepPin8 = A14;
 //unsigned short dirnPin8 = A15;
 
-int8_t step[8] = { 0 };			// 1 = normal actice;-1=ramp;0=STOP
-int16_t rampcount[8] = { 0 };	//counting back to 1
-int16_t rampstate[8] = { 0 };	//current rampstate
+int8_t step[8] = { 0 };			// 1 = normal actice;0=STOP
+
 
 
 
@@ -137,25 +137,17 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
-	rampcalc();
+
 
 	//Timer
-	Timer1.initialize(500);         // initialize timer1, 500us Period
+	Timer1.initialize(timertime);         // initialize timer1, 500us Period
 	Timer1.attachInterrupt(tick);  // attaches tick() as a timer overflow interrupt
 
 	setmicrosteps();
 	enableallmotors();
 }
 
-//Motor
 
-void rampcalc()
-{
-	for (int i = 1; i < motor::rampmax; i++)
-	{
-		motor::rampdelay[i] = int(sqrt(float(motor::rampmax) / i));
-	}
-}
 
 //enable all motors
 void enableallmotors()
@@ -239,43 +231,37 @@ void setmicrosteps()
 	}
 }
 
+void setdir(uint8_t motor, int8_t direction)
+{
+	switch (direction)
+	{
+	case 0:
+		digitalWrite(pin::direction[motor], LOW);
+		break;
+	case 1:
+		digitalWrite(pin::direction[motor], HIGH);
+		break;
+	default:
+		break;
+	}
+}
+
 //-----------INTERRUPTS------------
 void tick()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		switch (step[i])
+		for (int i = 0; i < 8; i++)
 		{
-		case 1: //normal active
+			if (step[i])
+			{
 			digitalWrite(pin::step[i], HIGH);
-			break;
-		case -1: //ramp
-			if (rampcount[i] <= 1)
-			{
-				digitalWrite(pin::step[i], HIGH);
-				
-				if (rampstate[i] >= motor::rampmax)//ramp finished
-				{
-					step[i] = 1;
-				}
-				else //next ramp state
-				{
-					rampstate[i]++;
-					rampcount[i] = motor::rampdelay[rampstate[i]];
-				}
 			}
-			else
-			{
-				rampcount[i]--;
-			}
-			break;
-
-		default:
-			break;
 		}
+
 	}
 
-	delayMicroseconds(2);
+	//delayMicroseconds(2);
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -286,7 +272,16 @@ void tick()
 
 void loop()
 {
+	setdir(4, 0);
+	step[4] = 1;
+	delay(500);
+	step[4] = 0;
+	delay(500);
 
-  
+	setdir(4, 1);
+	step[4] = 1;
+	delay(500);
+	step[4] = 0;
+	delay(500);
 
 }
