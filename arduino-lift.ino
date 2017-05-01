@@ -273,10 +273,9 @@ void tick()
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			if (step[i])
-			{
-			digitalWrite(pin::step[i], HIGH);
-			}
+			
+			digitalWrite(pin::step[i], step[i]);
+			
 		}
 
 	}
@@ -301,8 +300,8 @@ void loop()
 		case 16724175:  //Taste: 1 
 			for (int i = 0; i < 8; i++)
 			{
-			setdir(i, 0);
-			step[i] = 1;
+				setdir(i, 0);
+				step[i] = 1;
 			}
 			break;   
 		case 16718055:  //Taste: 2 
