@@ -137,6 +137,12 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
+	//USB-Serial (115200 Baus)
+	Serial.begin(115200);
+	while (!Serial) {
+		; // wait for serial port to connect
+	}
+	Serial.write("init");
 
 
 	//Timer
@@ -249,6 +255,7 @@ void setdir(uint8_t motor, int8_t direction)
 //-----------INTERRUPTS------------
 void tick()
 {
+	Serial.write("a");
 	for (int i = 0; i < 8; i++)
 	{
 		for (int i = 0; i < 8; i++)
