@@ -24,7 +24,7 @@ decode_results results;        //Ergebnisse werden decodiert und unter "results"
 #endif // IRRemote
 
 
-#define timertime 500
+#define timertime 1200
 
 //-------Variables-------
 namespace motor 
@@ -299,15 +299,24 @@ void loop()
 		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
 		{
 		case 16724175:  //Taste: 1 
-			setdir(1, 0);
-			step[1] = 1;
+			for (int i = 0; i < 8; i++)
+			{
+			setdir(i, 0);
+			step[i] = 1;
+			}
 			break;   
 		case 16718055:  //Taste: 2 
-			setdir(1, 1);
-			step[1] = 1;
+			for (int i = 0; i < 8; i++)
+			{
+				setdir(i, 1);
+				step[i] = 1;
+			}
 			break;     
 		case 16743045:  //Taste: 3
-			step[1] = 0;
+			for(int i = 0; i < 8; i++)
+			{
+				step[i] = 0;
+			}
 			break;    
 		case 16716015:  //Taste: 4 
 			
