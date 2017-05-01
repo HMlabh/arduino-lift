@@ -261,7 +261,7 @@ void tick()
 
 	}
 
-	//delayMicroseconds(2);
+	delayMicroseconds(2);
 
 	for (int i = 0; i < 8; i++)
 	{
