@@ -10,17 +10,27 @@
 //Motor-Driver: https://www.pololu.com/product/2132
 // Timer1 Libary: http://playground.arduino.cc/Code/Timer1
 
+#define IRRemote
+
 #include <TimerOne.h>
 
-#define timertime 5000
+#ifdef IRRemote
+#include <IRremote.h>        //Eingliederung der IR Bibliothek 
+
+unsigned short receiver = 21;       //Das digitale Signal wird vom angegebenen Pin abgegriffen 
+IRrecv irrecv(receiver);      //Definierung des Objekts welches die Signale der Fernbedienung ausliest 
+decode_results results;        //Ergebnisse werden decodiert und unter "results" abgespeichert 
+
+#endif // IRRemote
+
+
+#define timertime 500
 
 //-------Variables-------
 namespace motor 
 {
 	int8_t microstep = 1;
 	int16_t delay = 500;
-	int16_t rampdelay[] = { 0 };
-	int16_t rampmax = 300;
 }
 
 
@@ -144,6 +154,9 @@ void setup()
 	}
 	Serial.write("init");
 
+#ifdef IRRemote
+	irrecv.enableIRIn();            //Der IR Empfänger wird initialisiert. 
+#endif // IRRemote
 
 	//Timer
 	Timer1.initialize(timertime);         // initialize timer1, 500us Period
@@ -279,16 +292,41 @@ void tick()
 
 void loop()
 {
-	setdir(1, 0);
-	step[1] = 1;
-	delay(2000);
-	step[1] = 0;
-	delay(500);
 
-	setdir(1, 1);
-	step[1] = 1;
-	delay(2000);
-	step[1] = 0;
-	delay(500);
+#ifdef IRRemote
+	if (irrecv.decode(&results))
+	{
+		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
+		{
+		case 16724175:  //Taste: 1 
+			setdir(1, 0);
+			step[1] = 1;
+			break;   
+		case 16718055:  //Taste: 2 
+			setdir(1, 1);
+			step[1] = 1;
+			break;     
+		case 16743045:  //Taste: 3
+			step[1] = 0;
+			break;    
+		case 16716015:  //Taste: 4 
+			
+			break;   
+		case 16726215:  //Taste: 5
+			
+			break;    
+		case 16734885:  //Taste: 6 
+			
+			break;   
+		case 16728765:  //Taste: 7 
+			
+			break;   
+		case 16730805:  //Taste: 8
+			
+			break;    
+		}
+		irrecv.resume();            //Neustart des Receivers 
+	}
+#endif // IRRemote
 
 }
