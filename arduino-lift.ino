@@ -298,62 +298,90 @@ void tick()
 void loop()
 {
 
-#ifdef IRRemote
+#ifdef IRRemote		//DOWN=1	; UP=0
 	if (irrecv.decode(&results))
 	{
 		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
 		{
 		case 16702385:  //Taste: 0 
-						
+			//Lift 3 UP
+			setdir(2, 0);
+			step[2] = HIGH;
 			break;
 		case 16724175:  //Taste: 1 
-			//Lift 3 UP
-				setdir(5, 1);
-				step[5] = HIGH;
+			//Lift 3 DOWN
+			setdir(2, 1);
+			step[2] = HIGH;
 			break;   
 		case 16718055:  //Taste: 2 
+			//Lift 6 UP
 			setdir(5, 0);
 			step[5] = HIGH;
-			
 			break;     
 		case 16743045:  //Taste: 3
-			
+			//Lift 8 UP
+			setdir(7, 0);
+			step[7] = HIGH;
 			break;    
 		case 16716015:  //Taste: 4 
-			
+			//Lift 5 UP
+			setdir(4, 0);
+			step[4] = HIGH;
 			break;   
 		case 16726215:  //Taste: 5
-			
+			//Lift 6 DOWN
+			setdir(5, 1);
+			step[5] = HIGH;
 			break;    
 		case 16734885:  //Taste: 6 
-			
+			//Lift 8 DOWN
+			setdir(7, 1);
+			step[7] = HIGH;
 			break;   
 		case 16728765:  //Taste: 7 
-			
+			//Lift 5 DOWN
+			setdir(4, 1);
+			step[4] = HIGH;
 			break;   
 		case 16730805:  //Taste: 8
-			
+			//Lift 7 DOWN
+			setdir(6, 1);
+			step[6] = HIGH;
 			break;  
 		case 16732845:  //Taste: 9
-
+			//Lift 7 UP
+			setdir(6, 0);
+			step[6] = HIGH;
 			break;
 		case 16753245:  //Taste: A
-
+			//Lift 1 UP
+			setdir(0, 0);
+			step[0] = HIGH;
 			break;
 		case 16736925:  //Taste: B
-
+			//Lift 2 DOWN
+			setdir(1, 1);
+			step[1] = HIGH;
 			break;
 		case 16769565:  //Taste: C
-
+			//Lift 2 UP
+			setdir(1, 0);
+			step[1] = HIGH;
 			break;
 		case 16720605:  //Taste: D
-
+			//Lift 1 DOWN
+			setdir(0, 1);
+			step[0] = HIGH;
 			break;
 		case 16761405:  //Taste: E
-
+			//Lift 4 UP
+			setdir(3, 0);
+			step[3] = HIGH;
 			break;
 		case 16756815:  //Taste: F
-
+			//Lift 4 DOWN
+			setdir(3, 1);
+			step[3] = HIGH;
 			break;
 		case 16754775:  //Taste: Zahnrad
 			for (int i = 0; i < 8; i++)
