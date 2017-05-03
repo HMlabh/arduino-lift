@@ -12,6 +12,9 @@
 
 #define IRRemote
 
+#define UP 0
+#define DOWN 1
+
 #include <TimerOne.h>
 
 #ifdef IRRemote
@@ -298,24 +301,16 @@ void loop()
 		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
 		{
 		case 16724175:  //Taste: 1 
-			for (int i = 0; i < 8; i++)
-			{
-				setdir(i, 0);
-				step[i] = HIGH;
-			}
+			//Lift 3 UP
+				setdir(2, UP);
+				step[2] = HIGH;
 			break;   
 		case 16718055:  //Taste: 2 
-			for (int i = 0; i < 8; i++)
-			{
-				setdir(i, 1);
-				step[i] = HIGH;
-			}
+			
+			
 			break;     
 		case 16743045:  //Taste: 3
-			for(int i = 0; i < 8; i++)
-			{
-				step[i] = LOW;
-			}
+			
 			break;    
 		case 16716015:  //Taste: 4 
 			
@@ -353,8 +348,12 @@ void loop()
 		case 16756815:  //Taste: F
 
 			break;
-
-
+		case 16754775:  //Taste: Zahnrad
+			for (int i = 0; i < 8; i++)
+			{
+				step[i] = LOW;
+			}
+			break;
 		}
 		irrecv.resume();            //Neustart des Receivers 
 	}
