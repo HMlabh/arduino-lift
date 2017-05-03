@@ -331,7 +331,30 @@ void loop()
 			break;   
 		case 16730805:  //Taste: 8
 			
-			break;    
+			break;  
+		case 16732845:  //Taste: 9
+
+			break;
+		case 16753245:  //Taste: A
+
+			break;
+		case 16736925:  //Taste: B
+
+			break;
+		case 16769565:  //Taste: C
+
+			break;
+		case 16720605:  //Taste: D
+
+			break;
+		case 16761405:  //Taste: E
+
+			break;
+		case 16756815:  //Taste: F
+
+			break;
+
+
 		}
 		irrecv.resume();            //Neustart des Receivers 
 	}
