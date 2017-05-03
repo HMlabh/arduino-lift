@@ -276,8 +276,11 @@ void tick()
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			
+			if (step[i])
+			{
 			digitalWrite(pin::step[i], step[i]);
+
+			}
 			
 		}
 
