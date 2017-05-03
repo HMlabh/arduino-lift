@@ -303,6 +303,11 @@ void loop()
 	{
 		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
 		{
+		case 16702385:  //Taste: 0 
+						//Lift 3 DOWN
+			setdir(2, DOWN);
+			step[2] = HIGH;
+			break;
 		case 16724175:  //Taste: 1 
 			//Lift 3 UP
 				setdir(2, UP);
