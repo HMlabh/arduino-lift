@@ -114,7 +114,7 @@ namespace pin
 //unsigned short stepPin8 = A14;
 //unsigned short dirnPin8 = A15;
 
-int8_t step[8] = { 0 };			// 1 = normal actice;0=STOP
+int8_t step[8] = { LOW };			// 1 = normal actice;0=STOP
 
 
 
@@ -301,20 +301,20 @@ void loop()
 			for (int i = 0; i < 8; i++)
 			{
 				setdir(i, 0);
-				step[i] = 1;
+				step[i] = HIGH;
 			}
 			break;   
 		case 16718055:  //Taste: 2 
 			for (int i = 0; i < 8; i++)
 			{
 				setdir(i, 1);
-				step[i] = 1;
+				step[i] = HIGH;
 			}
 			break;     
 		case 16743045:  //Taste: 3
 			for(int i = 0; i < 8; i++)
 			{
-				step[i] = 0;
+				step[i] = LOW;
 			}
 			break;    
 		case 16716015:  //Taste: 4 
