@@ -1,11 +1,11 @@
 /*
 *  Ansteuerung des Hubsystems
-*  Dies ist der Ansteuerungscode für die Schrittmotoren, welche den Hub des Prototyps übernehmen.
+*  Dies ist der Ansteuerungscode fï¿½r die Schrittmotoren, welche den Hub des Prototyps ï¿½bernehmen.
 *  Version 1.0
 *  Stand: November 2016
-*  Dieser Code wurde im Rahmen einer Bachelorarbeit an der Hochschule München erstellt.
+*  Dieser Code wurde im Rahmen einer Bachelorarbeit an der Hochschule Mï¿½nchen erstellt.
 *  Verfasser: Kevin Wayne Wallace
-*  Überarbeitet und weiterentwickelt von Markus Gutekunst
+*  ï¿½berarbeitet und weiterentwickelt von Markus Gutekunst
 */
 //Motor-Driver: https://www.pololu.com/product/2132
 // Timer1 Libary: http://playground.arduino.cc/Code/Timer1
@@ -158,7 +158,7 @@ void setup()
 	Serial.write("init");
 
 #ifdef IRRemote
-	irrecv.enableIRIn();            //Der IR Empfänger wird initialisiert. 
+	irrecv.enableIRIn();            //Der IR Empfï¿½nger wird initialisiert. 
 #endif // IRRemote
 
 	//Timer
@@ -278,7 +278,7 @@ void tick()
 		{
 			if (step[i])
 			{
-			digitalWrite(pin::step[i], step[i]);
+			digitalWrite(pin::step[i], HIGH);
 
 			}
 			
@@ -304,18 +304,16 @@ void loop()
 		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
 		{
 		case 16702385:  //Taste: 0 
-						//Lift 3 DOWN
-			setdir(2, DOWN);
-			step[2] = HIGH;
+						
 			break;
 		case 16724175:  //Taste: 1 
 			//Lift 3 UP
-				setdir(2, UP);
-				step[2] = HIGH;
+				setdir(5, 1);
+				step[5] = HIGH;
 			break;   
 		case 16718055:  //Taste: 2 
-			setdir(2, DOWN);
-			step[2] = HIGH;
+			setdir(5, 0);
+			step[5] = HIGH;
 			
 			break;     
 		case 16743045:  //Taste: 3
