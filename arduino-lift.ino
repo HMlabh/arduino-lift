@@ -314,7 +314,8 @@ void loop()
 				step[2] = HIGH;
 			break;   
 		case 16718055:  //Taste: 2 
-			
+			setdir(2, DOWN);
+			step[2] = HIGH;
 			
 			break;     
 		case 16743045:  //Taste: 3
