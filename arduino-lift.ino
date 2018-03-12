@@ -1,25 +1,39 @@
 /*
 *  Ansteuerung des Hubsystems
-*  Dies ist der Ansteuerungscode für die Schrittmotoren, welche den Hub des Prototyps übernehmen.
+*  Dies ist der Ansteuerungscode fï¿½r die Schrittmotoren, welche den Hub des Prototyps ï¿½bernehmen.
 *  Version 1.0
 *  Stand: November 2016
-*  Dieser Code wurde im Rahmen einer Bachelorarbeit an der Hochschule München erstellt.
+*  Dieser Code wurde im Rahmen einer Bachelorarbeit an der Hochschule Mï¿½nchen erstellt.
 *  Verfasser: Kevin Wayne Wallace
-*  Überarbeitet und weiterentwickelt von Markus Gutekunst
+*  ï¿½berarbeitet und weiterentwickelt von Markus Gutekunst
 */
 //Motor-Driver: https://www.pololu.com/product/2132
 // Timer1 Libary: http://playground.arduino.cc/Code/Timer1
 
+#define IRRemote
+
+#define UP 0
+#define DOWN 1
+
 #include <TimerOne.h>
 
+#ifdef IRRemote
+#include <IRremote.h>        //Eingliederung der IR Bibliothek 
+
+unsigned short receiver = 21;       //Das digitale Signal wird vom angegebenen Pin abgegriffen 
+IRrecv irrecv(receiver);      //Definierung des Objekts welches die Signale der Fernbedienung ausliest 
+decode_results results;        //Ergebnisse werden decodiert und unter "results" abgespeichert 
+
+#endif // IRRemote
+
+
+#define timertime 1200
 
 //-------Variables-------
 namespace motor 
 {
-	int8_t microstep = 8;
+	int8_t microstep = 1;
 	int16_t delay = 500;
-	int16_t rampdelay[] = { 0 };
-	int16_t rampmax = 300;
 }
 
 
@@ -103,9 +117,8 @@ namespace pin
 //unsigned short stepPin8 = A14;
 //unsigned short dirnPin8 = A15;
 
-int8_t step[8] = { 0 };			// 1 = normal actice;-1=ramp;0=STOP
-int16_t rampcount[8] = { 0 };	//counting back to 1
-int16_t rampstate[8] = { 0 };	//current rampstate
+int8_t step[8] = { LOW };			// 1 = normal actice;0=STOP
+
 
 
 
@@ -137,25 +150,26 @@ void setup()
 		digitalWrite(pin::direction[i], LOW);	// default: LOW
 	}
 
-	rampcalc();
+	//USB-Serial (115200 Baus)
+	Serial.begin(115200);
+	while (!Serial) {
+		; // wait for serial port to connect
+	}
+	Serial.write("init");
+
+#ifdef IRRemote
+	irrecv.enableIRIn();            //Der IR Empfï¿½nger wird initialisiert. 
+#endif // IRRemote
 
 	//Timer
-	Timer1.initialize(500);         // initialize timer1, 500us Period
+	Timer1.initialize(timertime);         // initialize timer1, 500us Period
 	Timer1.attachInterrupt(tick);  // attaches tick() as a timer overflow interrupt
 
 	setmicrosteps();
 	enableallmotors();
 }
 
-//Motor
 
-void rampcalc()
-{
-	for (int i = 1; i < motor::rampmax; i++)
-	{
-		motor::rampdelay[i] = int(sqrt(float(motor::rampmax) / i));
-	}
-}
 
 //enable all motors
 void enableallmotors()
@@ -239,40 +253,37 @@ void setmicrosteps()
 	}
 }
 
+void setdir(uint8_t motor, int8_t direction)
+{
+	switch (direction)
+	{
+	case 0:
+		digitalWrite(pin::direction[motor], LOW);
+		break;
+	case 1:
+		digitalWrite(pin::direction[motor], HIGH);
+		break;
+	default:
+		break;
+	}
+}
+
 //-----------INTERRUPTS------------
 void tick()
 {
+	Serial.write("a");
 	for (int i = 0; i < 8; i++)
 	{
-		switch (step[i])
+		for (int i = 0; i < 8; i++)
 		{
-		case 1: //normal active
+			if (step[i])
+			{
 			digitalWrite(pin::step[i], HIGH);
-			break;
-		case -1: //ramp
-			if (rampcount[i] <= 1)
-			{
-				digitalWrite(pin::step[i], HIGH);
-				
-				if (rampstate[i] >= motor::rampmax)//ramp finished
-				{
-					step[i] = 1;
-				}
-				else //next ramp state
-				{
-					rampstate[i]++;
-					rampcount[i] = motor::rampdelay[rampstate[i]];
-				}
-			}
-			else
-			{
-				rampcount[i]--;
-			}
-			break;
 
-		default:
-			break;
+			}
+			
 		}
+
 	}
 
 	delayMicroseconds(2);
@@ -287,6 +298,100 @@ void tick()
 void loop()
 {
 
-  
+#ifdef IRRemote		//DOWN=1	; UP=0
+	if (irrecv.decode(&results))
+	{
+		switch (results.value)          //Switch Case Anweisung um die verschiedenen Motoren anzusteuern. 
+		{
+		case 16702385:  //Taste: 0 
+			//Lift 3 UP
+			setdir(2, 0);
+			step[2] = HIGH;
+			break;
+		case 16724175:  //Taste: 1 
+			//Lift 3 DOWN
+			setdir(2, 1);
+			step[2] = HIGH;
+			break;   
+		case 16718055:  //Taste: 2 
+			//Lift 6 UP
+			setdir(5, 0);
+			step[5] = HIGH;
+			break;     
+		case 16743045:  //Taste: 3
+			//Lift 8 UP
+			setdir(7, 0);
+			step[7] = HIGH;
+			break;    
+		case 16716015:  //Taste: 4 
+			//Lift 5 UP
+			setdir(4, 0);
+			step[4] = HIGH;
+			break;   
+		case 16726215:  //Taste: 5
+			//Lift 6 DOWN
+			setdir(5, 1);
+			step[5] = HIGH;
+			break;    
+		case 16734885:  //Taste: 6 
+			//Lift 8 DOWN
+			setdir(7, 1);
+			step[7] = HIGH;
+			break;   
+		case 16728765:  //Taste: 7 
+			//Lift 5 DOWN
+			setdir(4, 1);
+			step[4] = HIGH;
+			break;   
+		case 16730805:  //Taste: 8
+			//Lift 7 DOWN
+			setdir(6, 1);
+			step[6] = HIGH;
+			break;  
+		case 16732845:  //Taste: 9
+			//Lift 7 UP
+			setdir(6, 0);
+			step[6] = HIGH;
+			break;
+		case 16753245:  //Taste: A
+			//Lift 1 UP
+			setdir(0, 0);
+			step[0] = HIGH;
+			break;
+		case 16736925:  //Taste: B
+			//Lift 2 DOWN
+			setdir(1, 1);
+			step[1] = HIGH;
+			break;
+		case 16769565:  //Taste: C
+			//Lift 2 UP
+			setdir(1, 0);
+			step[1] = HIGH;
+			break;
+		case 16720605:  //Taste: D
+			//Lift 1 DOWN
+			setdir(0, 1);
+			step[0] = HIGH;
+			break;
+		case 16761405:  //Taste: E
+			//Lift 4 UP
+			setdir(3, 0);
+			step[3] = HIGH;
+			break;
+		case 16756815:  //Taste: F
+			//Lift 4 DOWN
+			setdir(3, 1);
+			step[3] = HIGH;
+			break;
+		case 16754775:  //Taste: Zahnrad
+			for (int i = 0; i < 8; i++)
+			{
+				step[i] = LOW;
+			}
+			break;
+		}
+		irrecv.resume();            //Neustart des Receivers 
+	}
+#endif // IRRemote
 
 }
